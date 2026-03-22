@@ -1,0 +1,25 @@
+idea:
+  title: Do any non-pokemon have non-trivial pokemon quality?
+  domain: nlp
+  hypothesis: 'The notion of ''X is a pokemon'' is encoded in a large language model,
+    possibly as a linear direction in the residual stream or via an MLP. By identifying
+    this representation, it is possible to determine which non-pokemon entities are
+    closest to being considered pokemon by the model.
+
+    '
+  background:
+    description: 'How is the notion of ''X'' is a pokemon stored in an LLM? Probably
+      via linear direction in the residual stream that checks with an MLP? Whatever
+      it is, once we discover it, can we see what things that aren''t pokemon are
+      the closest to (in a given LLMs opinion) being pokemon?
+
+      '
+  metadata:
+    author: Ari Holtzman
+    source: IdeaHub
+    source_url: https://hypogenic.ai/ideahub/idea/fM0g0UQh6YJ5b09tlSEm
+    idea_id: do_any_non_pokemon_have_non_tr_20260322_181032_58fab324
+    created_at: '2026-03-22T18:10:32.486476'
+    status: submitted
+    github_repo_name: non-pokemon-quality-nlp-claude
+    github_repo_url: https://github.com/Hypogenic-AI/non-pokemon-quality-nlp-claude
