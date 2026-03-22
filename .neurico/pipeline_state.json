@@ -1,0 +1,34 @@
+{
+  "created_at": "2026-03-22T18:10:37.348946",
+  "stages": {
+    "resource_finder": {
+      "status": "completed",
+      "started_at": "2026-03-22T18:10:37.349257",
+      "completed_at": "2026-03-22T18:22:43.602979",
+      "success": true,
+      "outputs": {
+        "literature_review": "/workspaces/non-pokemon-quality-nlp-claude/literature_review.md",
+        "resources_catalog": "/workspaces/non-pokemon-quality-nlp-claude/resources.md",
+        "papers_dir": "/workspaces/non-pokemon-quality-nlp-claude/papers",
+        "datasets_dir": "/workspaces/non-pokemon-quality-nlp-claude/datasets",
+        "code_dir": "/workspaces/non-pokemon-quality-nlp-claude/code"
+      }
+    },
+    "experiment_runner": {
+      "status": "completed",
+      "started_at": "2026-03-22T18:22:43.603324",
+      "completed_at": "2026-03-22T18:30:42.942009",
+      "success": true,
+      "outputs": {
+        "success": true,
+        "return_code": 0,
+        "elapsed_time": 479.3238217830658,
+        "log_file": "/workspaces/non-pokemon-quality-nlp-claude/logs/execution_claude.log",
+        "transcript_file": "/workspaces/non-pokemon-quality-nlp-claude/logs/execution_claude_transcript.jsonl"
+      }
+    }
+  },
+  "current_stage": null,
+  "completed": true,
+  "completed_at": "2026-03-22T18:30:42.942434"
+}

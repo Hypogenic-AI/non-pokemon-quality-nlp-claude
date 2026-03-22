@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "stages": {
+    "resource_finder": {
+      "success": true,
+      "completion_marker": "/workspaces/non-pokemon-quality-nlp-claude/.resource_finder_complete",
+      "outputs": {
+        "literature_review": "/workspaces/non-pokemon-quality-nlp-claude/literature_review.md",
+        "resources_catalog": "/workspaces/non-pokemon-quality-nlp-claude/resources.md",
+        "papers_dir": "/workspaces/non-pokemon-quality-nlp-claude/papers",
+        "datasets_dir": "/workspaces/non-pokemon-quality-nlp-claude/datasets",
+        "code_dir": "/workspaces/non-pokemon-quality-nlp-claude/code"
+      },
+      "log_file": "/workspaces/non-pokemon-quality-nlp-claude/logs/resource_finder_claude.log",
+      "transcript_file": "/workspaces/non-pokemon-quality-nlp-claude/logs/resource_finder_claude_transcript.jsonl",
+      "elapsed_time": 726.2526054382324
+    },
+    "experiment_runner": {
+      "success": true,
+      "return_code": 0,
+      "elapsed_time": 479.3238217830658,
+      "log_file": "/workspaces/non-pokemon-quality-nlp-claude/logs/execution_claude.log",
+      "transcript_file": "/workspaces/non-pokemon-quality-nlp-claude/logs/execution_claude_transcript.jsonl"
+    }
+  },
+  "work_dir": "/workspaces/non-pokemon-quality-nlp-claude"
+}

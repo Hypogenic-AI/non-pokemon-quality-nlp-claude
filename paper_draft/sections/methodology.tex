@@ -1,0 +1,53 @@
+\section{Methodology}
+\label{sec:method}
+
+\subsection{Task Formulation}
+\label{sec:task}
+
+We frame the task as a binary concept detection problem. Given an entity $e$, we ask whether the model's internal representation encodes the concept ``$e$ is a Pok\'{e}mon.'' Following the \lrh, we hypothesize that this concept corresponds to a direction $\vtheta \in \R^d$ in the residual stream, such that projecting an entity's activation onto $\vtheta$ yields a scalar score reflecting the entity's degree of Pok\'{e}mon-ness.
+
+\subsection{Data}
+\label{sec:data}
+
+\para{Pok\'{e}mon entities.}
+We collect 1,026 Pok\'{e}mon names spanning Generations 1--9 from the \texttt{pokemonData} repository.\footnote{\url{https://github.com/lgreski/pokemonData}} We randomly sample 160 for training the probe direction and reserve 40 for testing.
+
+\para{Non-Pok\'{e}mon entities.}
+We curate 177 non-Pok\'{e}mon entities across seven categories designed to span a range of expected Pok\'{e}mon similarity: real animals (53), mythical creatures (30), Digimon (22), Pok\'{e}mon-like invented names (20), other game creatures (17), fictional characters (15), and common objects (20). We split these 70/30 into 122 training and 55 test entities, stratified by category.
+
+\para{Prompt template.}
+Each entity is embedded in the template ``\texttt{\{entity\} is a}'' and tokenized with a beginning-of-sequence token prepended. We extract activations at the last token position of the entity name, following the finding of \citet{meng2022locating} that the last subject token is critical for factual recall.
+
+\subsection{Mass-Mean Probe}
+\label{sec:probe}
+
+We compute the Pok\'{e}mon direction at each layer $\ell$ as the normalized difference in means between Pok\'{e}mon and non-Pok\'{e}mon training activations:
+\begin{equation}
+\label{eq:direction}
+\vtheta_\ell = \frac{\vmu_\ell^{+} - \vmu_\ell^{-}}{\|\vmu_\ell^{+} - \vmu_\ell^{-}\|},
+\end{equation}
+where $\vmu_\ell^{+} = \frac{1}{|\gD^{+}|}\sum_{e \in \gD^{+}} \va_\ell(e)$ is the mean activation over Pok\'{e}mon training entities and $\vmu_\ell^{-}$ is defined analogously over non-Pok\'{e}mon training entities. The Pok\'{e}mon quality score for any entity $e$ is then:
+\begin{equation}
+\label{eq:score}
+s_\ell(e) = \vtheta_\ell^\top \va_\ell(e).
+\end{equation}
+We classify an entity as Pok\'{e}mon if $s_\ell(e)$ exceeds a threshold $\tau$, set as the midpoint between the training class means projected onto $\vtheta_\ell$.
+
+\subsection{Model and Implementation}
+\label{sec:implementation}
+
+We use \gptxl (1.5B parameters, 48 layers, $d = 1600$) loaded via \tlens \citep{nanda2022transformerlens}. We extract residual stream activations at every second layer (24 layers total) in float16 precision with batch size 16. The entire pipeline---activation extraction plus analysis---runs in approximately 15 seconds on a single NVIDIA RTX A6000 GPU. The mass-mean probe is deterministic and has no stochastic components, so a single run suffices.
+
+\subsection{Baselines}
+\label{sec:baselines}
+
+We compare the mass-mean probe against two baselines:
+\begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+    \item \textbf{Logistic regression}: A supervised linear classifier trained on the same train split activations at the best layer. This has strictly more capacity than the mass-mean direction (a full weight vector rather than the difference in means).
+    \item \textbf{Random direction}: A randomly sampled unit vector in $\R^d$, providing a chance-level null baseline.
+\end{itemize}
+
+\subsection{Evaluation}
+\label{sec:evaluation}
+
+We evaluate using classification accuracy and area under the ROC curve (AUC) on the held-out test set (40 Pok\'{e}mon, 55 non-Pok\'{e}mon). We report Cohen's $d$ as an effect size measure for the separation between Pok\'{e}mon and non-Pok\'{e}mon projections. For the non-Pok\'{e}mon ranking analysis, we use the Kruskal-Wallis $H$ test to assess whether Pok\'{e}mon quality scores differ significantly across entity categories.

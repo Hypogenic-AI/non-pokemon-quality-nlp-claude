@@ -1,0 +1,117 @@
+\section{Results}
+\label{sec:results}
+
+\subsection{The Pok\'{e}mon Direction Is Linearly Encoded}
+\label{sec:linear}
+
+The mass-mean probe achieves 88.4\% test accuracy at layer 10 (AUC = 0.934), confirming that ``is a Pok\'{e}mon'' is linearly encoded in GPT-2-XL's residual stream. \Tabref{tab:layer_accuracy} shows classification performance across layers. The Pok\'{e}mon direction emerges as early as layer 4 (81.1\% accuracy) and maintains strong performance through layers 10--32, with the highest AUC of 0.965 at layer 32. Performance degrades in the final layers (44--46), consistent with prior findings that conceptual representations are strongest in middle transformer layers \citep{marks2024geometry, meng2022locating}.
+
+\begin{table}[t]
+    \centering
+    \caption{Layer-wise classification performance of the mass-mean probe. Best accuracy and AUC in \textbf{bold}. The Pok\'{e}mon direction peaks in middle layers (10--32) and degrades in the final layers.}
+    \label{tab:layer_accuracy}
+    \begin{tabular}{@{}lccc@{}}
+        \toprule
+        Layer & Test Accuracy & AUC & Cohen's $d$ \\
+        \midrule
+        0  & 0.768 & 0.828 & 1.54 \\
+        4  & 0.811 & 0.885 & 1.94 \\
+        8  & 0.853 & 0.919 & 1.91 \\
+        10 & {\bf 0.884} & 0.934 & 1.82 \\
+        12 & {\bf 0.884} & 0.938 & 1.84 \\
+        16 & 0.853 & 0.951 & 2.15 \\
+        26 & 0.863 & 0.955 & 2.52 \\
+        30 & {\bf 0.884} & 0.960 & 2.59 \\
+        32 & {\bf 0.884} & {\bf 0.965} & {\bf 2.62} \\
+        38 & 0.811 & 0.930 & 2.58 \\
+        44 & 0.821 & 0.866 & 2.35 \\
+        46 & 0.811 & 0.806 & 1.78 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Mass-Mean Outperforms Logistic Regression}
+\label{sec:comparison}
+
+\Tabref{tab:method_comparison} compares the mass-mean probe against baselines at layer 10. The mass-mean probe outperforms logistic regression in accuracy (88.4\% vs.\ 83.2\%) despite being unsupervised. The random direction baseline performs at chance (50.5\%), confirming that the Pok\'{e}mon direction captures genuine structure rather than an artifact of high-dimensional geometry.
+
+\begin{table}[t]
+    \centering
+    \caption{Method comparison at layer 10. The unsupervised mass-mean probe outperforms supervised logistic regression. Best results in \textbf{bold}.}
+    \label{tab:method_comparison}
+    \begin{tabular}{@{}lcc@{}}
+        \toprule
+        Method & Test Accuracy & AUC \\
+        \midrule
+        \massmean (ours) & {\bf 0.884} & 0.934 \\
+        \logreg          & 0.832       & {\bf 0.941} \\
+        \randomdir       & 0.505       & ---   \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Non-Pok\'{e}mon Entities Form a Spectrum of Pok\'{e}mon Quality}
+\label{sec:spectrum}
+
+Projecting all 177 non-Pok\'{e}mon entities onto the Pok\'{e}mon direction at layer 10 reveals a continuous distribution of Pok\'{e}mon quality scores, not a binary split. \Tabref{tab:top_nonpokemon} shows the 15 highest-scoring non-Pok\'{e}mon entities. Thirteen non-Pok\'{e}mon entities cross the classification boundary: four invented Pok\'{e}mon-sounding names (Crystalix, Frostbeak, Thunderix, Mistral), six game creatures (Cactuar, Koopa, Pianta, Goomba, Kirby, Moogle), one Digimon (Garurumon), one real animal (armadillo), and one fictional character (Samus).
+
+\begin{table}[t]
+    \centering
+    \caption{Top 15 non-Pok\'{e}mon entities by Pok\'{e}mon quality score at layer 10. Entities above the dashed line were classified as Pok\'{e}mon by the probe. Game creatures from Nintendo franchises and invented monster names dominate the rankings.}
+    \label{tab:top_nonpokemon}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{@{}clcrc@{}}
+        \toprule
+        Rank & Entity & Category & Score & Classified as Pok\'{e}mon? \\
+        \midrule
+        1  & Crystalix  & Pok\'{e}mon-like names  & $-10.13$ & Yes \\
+        2  & Cactuar    & Other game creatures    & $-10.76$ & Yes \\
+        3  & Frostbeak  & Pok\'{e}mon-like names  & $-11.40$ & Yes \\
+        4  & Koopa      & Other game creatures    & $-11.60$ & Yes \\
+        5  & Thunderix  & Pok\'{e}mon-like names  & $-12.72$ & Yes \\
+        6  & Pianta     & Other game creatures    & $-13.50$ & Yes \\
+        7  & Samus      & Fictional characters    & $-13.71$ & Yes \\
+        8  & Goomba     & Other game creatures    & $-14.34$ & Yes \\
+        9  & Garurumon  & Digimon                 & $-14.87$ & Yes \\
+        10 & Mistral    & Pok\'{e}mon-like names  & $-15.06$ & Yes \\
+        11 & armadillo  & Real animals            & $-15.56$ & Yes \\
+        12 & Kirby      & Other game creatures    & $-15.83$ & Yes \\
+        13 & Moogle     & Other game creatures    & $-15.86$ & Yes \\
+        \cdashline{1-5}
+        14 & Boulderback & Pok\'{e}mon-like names & $-16.58$ & No \\
+        15 & kitsune     & Mythical creatures     & $-16.80$ & No \\
+        \bottomrule
+    \end{tabular}%
+    }
+\end{table}
+
+The bottom of the ranking is equally informative. The least Pok\'{e}mon-like entities are common real animals (horse at $-79.98$, frog at $-75.45$, dog at $-74.72$) and common objects. Notably, ``dragon'' scores $-74.64$ despite many dragon-type Pok\'{e}mon existing, suggesting the model distinguishes between the general concept of a dragon and dragon-type Pok\'{e}mon.
+
+\subsection{Category-Level Analysis}
+\label{sec:categories}
+
+\Tabref{tab:categories} shows mean Pok\'{e}mon quality scores by category. The ordering is highly interpretable: invented Pok\'{e}mon-sounding names and game creatures from similar franchises are most Pok\'{e}mon-like, while common objects are maximally distant. Digimon rank third---close to Pok\'{e}mon but clearly distinguished, suggesting the model encodes franchise-specific knowledge rather than generic ``fictional creature-ness.'' The Kruskal-Wallis test confirms that these differences are highly significant ($H = 58.22$, $p = 1.03 \times 10^{-10}$).
+
+\begin{table}[t]
+    \centering
+    \caption{Mean Pok\'{e}mon quality score by entity category at layer 10, sorted by score. Higher (less negative) scores indicate greater Pok\'{e}mon-likeness. Differences are significant at $p < 10^{-10}$ (Kruskal-Wallis).}
+    \label{tab:categories}
+    \begin{tabular}{@{}lrrc@{}}
+        \toprule
+        Category & Mean Score & Std Dev & $N$ \\
+        \midrule
+        Pok\'{e}mon-like names  & $-21.58$ & 8.59  & 20 \\
+        Other game creatures    & $-22.12$ & 11.67 & 17 \\
+        Digimon                 & $-27.20$ & 5.67  & 22 \\
+        Mythical creatures      & $-32.90$ & 14.58 & 30 \\
+        Real animals            & $-36.81$ & 16.42 & 53 \\
+        Fictional characters    & $-38.59$ & 15.07 & 15 \\
+        Common objects          & $-54.71$ & 12.23 & 20 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Pok\'{e}mon Quality Varies Among Actual Pok\'{e}mon}
+\label{sec:within_pokemon}
+
+The Pok\'{e}mon direction also distinguishes among actual Pok\'{e}mon. Iconic or distinctively named Pok\'{e}mon like Gothorita ($-5.2$) and Oshawott ($-6.8$) score higher than obscure ones like Silcoon ($-31.5$) and Clobbopus ($-28.6$). This suggests the direction captures not just category membership but also how ``recognizably Pok\'{e}mon'' a name sounds---a reflection of the entity's prominence in the model's training data.

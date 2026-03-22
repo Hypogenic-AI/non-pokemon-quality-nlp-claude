@@ -1,0 +1,1295 @@
+{
+  "model": "gpt2-xl",
+  "seed": 42,
+  "best_layer": 10,
+  "n_layers_tested": 24,
+  "layers_tested": [
+    0,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    16,
+    18,
+    20,
+    22,
+    24,
+    26,
+    28,
+    30,
+    32,
+    34,
+    36,
+    38,
+    40,
+    42,
+    44,
+    46
+  ],
+  "layer_accuracies": {
+    "0": {
+      "train_acc": 0.7624113475177305,
+      "test_acc": 0.7684210526315789,
+      "test_auc": 0.8277272727272726,
+      "cohens_d": 1.5398813486099243
+    },
+    "2": {
+      "train_acc": 0.8049645390070922,
+      "test_acc": 0.7894736842105263,
+      "test_auc": 0.8345454545454545,
+      "cohens_d": 1.7602192163467407
+    },
+    "4": {
+      "train_acc": 0.875886524822695,
+      "test_acc": 0.8105263157894737,
+      "test_auc": 0.885,
+      "cohens_d": 1.9411261081695557
+    },
+    "6": {
+      "train_acc": 0.8617021276595744,
+      "test_acc": 0.7894736842105263,
+      "test_auc": 0.9009090909090909,
+      "cohens_d": 1.9502300024032593
+    },
+    "8": {
+      "train_acc": 0.8617021276595744,
+      "test_acc": 0.8526315789473684,
+      "test_auc": 0.9190909090909091,
+      "cohens_d": 1.9115002155303955
+    },
+    "10": {
+      "train_acc": 0.8829787234042553,
+      "test_acc": 0.8842105263157894,
+      "test_auc": 0.9340909090909091,
+      "cohens_d": 1.817744255065918
+    },
+    "12": {
+      "train_acc": 0.875886524822695,
+      "test_acc": 0.8842105263157894,
+      "test_auc": 0.9381818181818181,
+      "cohens_d": 1.8357524871826172
+    },
+    "14": {
+      "train_acc": 0.8617021276595744,
+      "test_acc": 0.8736842105263158,
+      "test_auc": 0.9472727272727273,
+      "cohens_d": 1.9890464544296265
+    },
+    "16": {
+      "train_acc": 0.8546099290780141,
+      "test_acc": 0.8526315789473684,
+      "test_auc": 0.9513636363636364,
+      "cohens_d": 2.1488888263702393
+    },
+    "18": {
+      "train_acc": 0.8687943262411347,
+      "test_acc": 0.8736842105263158,
+      "test_auc": 0.9490909090909091,
+      "cohens_d": 2.2822961807250977
+    },
+    "20": {
+      "train_acc": 0.8617021276595744,
+      "test_acc": 0.8631578947368421,
+      "test_auc": 0.9472727272727273,
+      "cohens_d": 2.3631856441497803
+    },
+    "22": {
+      "train_acc": 0.8617021276595744,
+      "test_acc": 0.8526315789473684,
+      "test_auc": 0.95,
+      "cohens_d": 2.4253108501434326
+    },
+    "24": {
+      "train_acc": 0.8617021276595744,
+      "test_acc": 0.8526315789473684,
+      "test_auc": 0.9472727272727273,
+      "cohens_d": 2.4640188217163086
+    },
+    "26": {
+      "train_acc": 0.8687943262411347,
+      "test_acc": 0.8631578947368421,
+      "test_auc": 0.9554545454545454,
+      "cohens_d": 2.521699905395508
+    },
+    "28": {
+      "train_acc": 0.8687943262411347,
+      "test_acc": 0.8421052631578947,
+      "test_auc": 0.96,
+      "cohens_d": 2.5577750205993652
+    },
+    "30": {
+      "train_acc": 0.8687943262411347,
+      "test_acc": 0.8842105263157894,
+      "test_auc": 0.96,
+      "cohens_d": 2.5902316570281982
+    },
+    "32": {
+      "train_acc": 0.875886524822695,
+      "test_acc": 0.8842105263157894,
+      "test_auc": 0.9654545454545455,
+      "cohens_d": 2.617553234100342
+    },
+    "34": {
+      "train_acc": 0.8546099290780141,
+      "test_acc": 0.8736842105263158,
+      "test_auc": 0.9527272727272726,
+      "cohens_d": 2.590207815170288
+    },
+    "36": {
+      "train_acc": 0.8617021276595744,
+      "test_acc": 0.8315789473684211,
+      "test_auc": 0.9386363636363636,
+      "cohens_d": 2.5651001930236816
+    },
+    "38": {
+      "train_acc": 0.8617021276595744,
+      "test_acc": 0.8105263157894737,
+      "test_auc": 0.9304545454545454,
+      "cohens_d": 2.583524465560913
+    },
+    "40": {
+      "train_acc": 0.8687943262411347,
+      "test_acc": 0.8105263157894737,
+      "test_auc": 0.9272727272727272,
+      "cohens_d": 2.6242637634277344
+    },
+    "42": {
+      "train_acc": 0.875886524822695,
+      "test_acc": 0.8210526315789474,
+      "test_auc": 0.9177272727272727,
+      "cohens_d": 2.6081387996673584
+    },
+    "44": {
+      "train_acc": 0.8617021276595744,
+      "test_acc": 0.8210526315789474,
+      "test_auc": 0.865909090909091,
+      "cohens_d": 2.3499341011047363
+    },
+    "46": {
+      "train_acc": 0.7907801418439716,
+      "test_acc": 0.8105263157894737,
+      "test_auc": 0.8059090909090909,
+      "cohens_d": 1.7804423570632935
+    }
+  },
+  "best_layer_results": {
+    "mass_mean_test_acc": 0.8842105263157894,
+    "mass_mean_test_auc": 0.9340909090909091,
+    "mass_mean_cohens_d": 1.817744255065918,
+    "lr_test_acc": 0.8315789473684211,
+    "lr_test_auc": 0.9409090909090909,
+    "random_test_acc": 0.5052631578947369
+  },
+  "non_pokemon_rankings": [
+    {
+      "entity": "Crystalix",
+      "category": "pokemon_like_names",
+      "pokemon_quality": -10.12748908996582,
+      "classified_as_pokemon": true
+    },
+    {
+      "entity": "Cactuar",
+      "category": "other_game_creatures",
+      "pokemon_quality": -10.756729125976562,
+      "classified_as_pokemon": true
+    },
+    {
+      "entity": "Frostbeak",
+      "category": "pokemon_like_names",
+      "pokemon_quality": -11.395312309265137,
+      "classified_as_pokemon": true
+    },
+    {
+      "entity": "Koopa",
+      "category": "other_game_creatures",
+      "pokemon_quality": -11.600741386413574,
+      "classified_as_pokemon": true
+    },
+    {
+      "entity": "Thunderix",
+      "category": "pokemon_like_names",
+      "pokemon_quality": -12.717203140258789,
+      "classified_as_pokemon": true
+    },
+    {
+      "entity": "Pianta",
+      "category": "other_game_creatures",
+      "pokemon_quality": -13.497551918029785,
+      "classified_as_pokemon": true
+    },
+    {
+      "entity": "Samus",
+      "category": "fictional_characters",
+      "pokemon_quality": -13.712535858154297,
+      "classified_as_pokemon": true
+    },
+    {
+      "entity": "Goomba",
+      "category": "other_game_creatures",
+      "pokemon_quality": -14.34171199798584,
+      "classified_as_pokemon": true
+    },
+    {
+      "entity": "Garurumon",
+      "category": "digimon",
+      "pokemon_quality": -14.871068954467773,
+      "classified_as_pokemon": true
+    },
+    {
+      "entity": "Mistral",
+      "category": "pokemon_like_names",
+      "pokemon_quality": -15.057731628417969,
+      "classified_as_pokemon": true
+    },
+    {
+      "entity": "armadillo",
+      "category": "real_animals",
+      "pokemon_quality": -15.556577682495117,
+      "classified_as_pokemon": true
+    },
+    {
+      "entity": "Kirby",
+      "category": "other_game_creatures",
+      "pokemon_quality": -15.83204174041748,
+      "classified_as_pokemon": true
+    },
+    {
+      "entity": "Moogle",
+      "category": "other_game_creatures",
+      "pokemon_quality": -15.854995727539062,
+      "classified_as_pokemon": true
+    },
+    {
+      "entity": "Boulderback",
+      "category": "pokemon_like_names",
+      "pokemon_quality": -16.576757431030273,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "kitsune",
+      "category": "mythical_creatures",
+      "pokemon_quality": -16.795717239379883,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Voltaur",
+      "category": "pokemon_like_names",
+      "pokemon_quality": -16.8154296875,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Gabumon",
+      "category": "digimon",
+      "pokemon_quality": -16.93089485168457,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Flamezor",
+      "category": "pokemon_like_names",
+      "pokemon_quality": -17.055078506469727,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Agumon",
+      "category": "digimon",
+      "pokemon_quality": -17.057294845581055,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Thornvine",
+      "category": "pokemon_like_names",
+      "pokemon_quality": -17.292085647583008,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Gandalf",
+      "category": "fictional_characters",
+      "pokemon_quality": -17.309040069580078,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Creeper",
+      "category": "other_game_creatures",
+      "pokemon_quality": -17.458032608032227,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Aquadon",
+      "category": "pokemon_like_names",
+      "pokemon_quality": -17.795339584350586,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "chimera",
+      "category": "mythical_creatures",
+      "pokemon_quality": -17.96977996826172,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Navi",
+      "category": "other_game_creatures",
+      "pokemon_quality": -18.009748458862305,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "ferret",
+      "category": "real_animals",
+      "pokemon_quality": -18.387779235839844,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Calumon",
+      "category": "digimon",
+      "pokemon_quality": -18.435810089111328,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "ogre",
+      "category": "mythical_creatures",
+      "pokemon_quality": -18.610332489013672,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Hydralisk",
+      "category": "pokemon_like_names",
+      "pokemon_quality": -18.814544677734375,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Yoda",
+      "category": "fictional_characters",
+      "pokemon_quality": -18.860776901245117,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Zephyrion",
+      "category": "pokemon_like_names",
+      "pokemon_quality": -19.02711296081543,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "giraffe",
+      "category": "real_animals",
+      "pokemon_quality": -19.541208267211914,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Glacioth",
+      "category": "pokemon_like_names",
+      "pokemon_quality": -19.654817581176758,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "tapir",
+      "category": "real_animals",
+      "pokemon_quality": -19.68427085876465,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "basilisk",
+      "category": "mythical_creatures",
+      "pokemon_quality": -20.136306762695312,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "manatee",
+      "category": "real_animals",
+      "pokemon_quality": -20.21226692199707,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "narwhal",
+      "category": "real_animals",
+      "pokemon_quality": -20.242887496948242,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "stingray",
+      "category": "real_animals",
+      "pokemon_quality": -20.26959228515625,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Pyrotusk",
+      "category": "pokemon_like_names",
+      "pokemon_quality": -20.391395568847656,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Pikmin",
+      "category": "other_game_creatures",
+      "pokemon_quality": -20.4404296875,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "wendigo",
+      "category": "mythical_creatures",
+      "pokemon_quality": -20.542362213134766,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "chinchilla",
+      "category": "real_animals",
+      "pokemon_quality": -20.631826400756836,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Enderman",
+      "category": "other_game_creatures",
+      "pokemon_quality": -21.047077178955078,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "yokai",
+      "category": "mythical_creatures",
+      "pokemon_quality": -21.826704025268555,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "lobster",
+      "category": "real_animals",
+      "pokemon_quality": -22.351490020751953,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "hydra",
+      "category": "mythical_creatures",
+      "pokemon_quality": -22.661548614501953,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "manticore",
+      "category": "mythical_creatures",
+      "pokemon_quality": -22.77545928955078,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Tonberry",
+      "category": "other_game_creatures",
+      "pokemon_quality": -22.871999740600586,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "platypus",
+      "category": "real_animals",
+      "pokemon_quality": -23.01571273803711,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "axolotl",
+      "category": "real_animals",
+      "pokemon_quality": -23.070457458496094,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Luma",
+      "category": "other_game_creatures",
+      "pokemon_quality": -23.181516647338867,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "banshee",
+      "category": "mythical_creatures",
+      "pokemon_quality": -23.346464157104492,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "squid",
+      "category": "real_animals",
+      "pokemon_quality": -23.411745071411133,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "mountain",
+      "category": "common_objects",
+      "pokemon_quality": -23.447999954223633,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Slime",
+      "category": "other_game_creatures",
+      "pokemon_quality": -23.62134552001953,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Wormmon",
+      "category": "digimon",
+      "pokemon_quality": -24.049415588378906,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "salamander",
+      "category": "real_animals",
+      "pokemon_quality": -24.302827835083008,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Sparkfin",
+      "category": "pokemon_like_names",
+      "pokemon_quality": -24.34109878540039,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Lopmon",
+      "category": "digimon",
+      "pokemon_quality": -24.47901725769043,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "kappa",
+      "category": "mythical_creatures",
+      "pokemon_quality": -24.602863311767578,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "whale",
+      "category": "real_animals",
+      "pokemon_quality": -24.79022789001465,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Shadowclaw",
+      "category": "pokemon_like_names",
+      "pokemon_quality": -25.09012222290039,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "leviathan",
+      "category": "mythical_creatures",
+      "pokemon_quality": -25.190488815307617,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "lamp",
+      "category": "common_objects",
+      "pokemon_quality": -25.3257999420166,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Waddle Dee",
+      "category": "other_game_creatures",
+      "pokemon_quality": -25.335914611816406,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "deer",
+      "category": "real_animals",
+      "pokemon_quality": -25.406566619873047,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Emberhawk",
+      "category": "pokemon_like_names",
+      "pokemon_quality": -25.518352508544922,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "tanuki",
+      "category": "mythical_creatures",
+      "pokemon_quality": -25.559642791748047,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Gatomon",
+      "category": "digimon",
+      "pokemon_quality": -25.630334854125977,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Magmite",
+      "category": "pokemon_like_names",
+      "pokemon_quality": -26.037315368652344,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "firefly",
+      "category": "real_animals",
+      "pokemon_quality": -26.501001358032227,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Guilmon",
+      "category": "digimon",
+      "pokemon_quality": -26.73933219909668,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Yoshi",
+      "category": "other_game_creatures",
+      "pokemon_quality": -27.269920349121094,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "scorpion",
+      "category": "real_animals",
+      "pokemon_quality": -27.310420989990234,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "goblin",
+      "category": "mythical_creatures",
+      "pokemon_quality": -27.374515533447266,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Gomamon",
+      "category": "digimon",
+      "pokemon_quality": -27.444808959960938,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "unicorn",
+      "category": "mythical_creatures",
+      "pokemon_quality": -27.569992065429688,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "crab",
+      "category": "real_animals",
+      "pokemon_quality": -27.58968734741211,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Biyomon",
+      "category": "digimon",
+      "pokemon_quality": -27.87369155883789,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Renamon",
+      "category": "digimon",
+      "pokemon_quality": -28.085729598999023,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "eel",
+      "category": "real_animals",
+      "pokemon_quality": -28.097091674804688,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Pac-Man",
+      "category": "fictional_characters",
+      "pokemon_quality": -28.32288360595703,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "capybara",
+      "category": "real_animals",
+      "pokemon_quality": -28.471582412719727,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "wyvern",
+      "category": "mythical_creatures",
+      "pokemon_quality": -28.500919342041016,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "pangolin",
+      "category": "real_animals",
+      "pokemon_quality": -28.66391372680664,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "butterfly",
+      "category": "real_animals",
+      "pokemon_quality": -28.847402572631836,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "kraken",
+      "category": "mythical_creatures",
+      "pokemon_quality": -29.099971771240234,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "djinn",
+      "category": "mythical_creatures",
+      "pokemon_quality": -29.166362762451172,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "penguin",
+      "category": "real_animals",
+      "pokemon_quality": -29.22719955444336,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Greymon",
+      "category": "digimon",
+      "pokemon_quality": -29.293804168701172,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Tentomon",
+      "category": "digimon",
+      "pokemon_quality": -29.448665618896484,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "shark",
+      "category": "real_animals",
+      "pokemon_quality": -29.52385711669922,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "tengu",
+      "category": "mythical_creatures",
+      "pokemon_quality": -29.579469680786133,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "seahorse",
+      "category": "real_animals",
+      "pokemon_quality": -29.778514862060547,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Impmon",
+      "category": "digimon",
+      "pokemon_quality": -30.332847595214844,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Patamon",
+      "category": "digimon",
+      "pokemon_quality": -30.36739730834961,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Palmon",
+      "category": "digimon",
+      "pokemon_quality": -30.9459285736084,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "hedgehog",
+      "category": "real_animals",
+      "pokemon_quality": -31.086580276489258,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "sphinx",
+      "category": "mythical_creatures",
+      "pokemon_quality": -31.280590057373047,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "parrot",
+      "category": "real_animals",
+      "pokemon_quality": -31.40633201599121,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Terriermon",
+      "category": "digimon",
+      "pokemon_quality": -31.50196075439453,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "MetalGreymon",
+      "category": "digimon",
+      "pokemon_quality": -31.558551788330078,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Angemon",
+      "category": "digimon",
+      "pokemon_quality": -31.690488815307617,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Metroid",
+      "category": "other_game_creatures",
+      "pokemon_quality": -31.813932418823242,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "WarGreymon",
+      "category": "digimon",
+      "pokemon_quality": -31.977928161621094,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "mantis",
+      "category": "real_animals",
+      "pokemon_quality": -32.2953987121582,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Veemon",
+      "category": "digimon",
+      "pokemon_quality": -32.486228942871094,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "snake",
+      "category": "real_animals",
+      "pokemon_quality": -32.70530700683594,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "lion",
+      "category": "real_animals",
+      "pokemon_quality": -32.8499755859375,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "troll",
+      "category": "mythical_creatures",
+      "pokemon_quality": -32.875030517578125,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "griffin",
+      "category": "mythical_creatures",
+      "pokemon_quality": -32.95085144042969,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Superman",
+      "category": "fictional_characters",
+      "pokemon_quality": -32.95185089111328,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Sonic",
+      "category": "fictional_characters",
+      "pokemon_quality": -33.06923294067383,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "crystal",
+      "category": "common_objects",
+      "pokemon_quality": -33.20221710205078,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "jellyfish",
+      "category": "real_animals",
+      "pokemon_quality": -33.65253829956055,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "dragonfly",
+      "category": "real_animals",
+      "pokemon_quality": -34.059051513671875,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "chameleon",
+      "category": "real_animals",
+      "pokemon_quality": -34.1578254699707,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "starfish",
+      "category": "real_animals",
+      "pokemon_quality": -34.658355712890625,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Mickey Mouse",
+      "category": "fictional_characters",
+      "pokemon_quality": -35.146827697753906,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "golem",
+      "category": "mythical_creatures",
+      "pokemon_quality": -35.50267791748047,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "spider",
+      "category": "real_animals",
+      "pokemon_quality": -35.591331481933594,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "pegasus",
+      "category": "mythical_creatures",
+      "pokemon_quality": -35.72962188720703,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "pufferfish",
+      "category": "real_animals",
+      "pokemon_quality": -36.53974914550781,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Devimon",
+      "category": "digimon",
+      "pokemon_quality": -37.09589385986328,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "thunderbird",
+      "category": "mythical_creatures",
+      "pokemon_quality": -37.20230484008789,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Leafeon_fake",
+      "category": "pokemon_like_names",
+      "pokemon_quality": -38.55995559692383,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "fairy",
+      "category": "mythical_creatures",
+      "pokemon_quality": -38.603607177734375,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Mega Man",
+      "category": "fictional_characters",
+      "pokemon_quality": -39.0308837890625,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Dustox_fake",
+      "category": "pokemon_like_names",
+      "pokemon_quality": -39.13114547729492,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "gecko",
+      "category": "real_animals",
+      "pokemon_quality": -39.43561935424805,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Venomoth_fake",
+      "category": "pokemon_like_names",
+      "pokemon_quality": -40.24897003173828,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Spider-Man",
+      "category": "fictional_characters",
+      "pokemon_quality": -40.34980010986328,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "iguana",
+      "category": "real_animals",
+      "pokemon_quality": -41.77091979980469,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Darth Vader",
+      "category": "fictional_characters",
+      "pokemon_quality": -42.447059631347656,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "tiger",
+      "category": "real_animals",
+      "pokemon_quality": -42.64237594604492,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Harry Potter",
+      "category": "fictional_characters",
+      "pokemon_quality": -44.32395935058594,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "rabbit",
+      "category": "real_animals",
+      "pokemon_quality": -47.546287536621094,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "eagle",
+      "category": "real_animals",
+      "pokemon_quality": -48.937007904052734,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "turtle",
+      "category": "real_animals",
+      "pokemon_quality": -48.97303009033203,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "octopus",
+      "category": "real_animals",
+      "pokemon_quality": -49.341064453125,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "elephant",
+      "category": "real_animals",
+      "pokemon_quality": -51.03119659423828,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Link",
+      "category": "fictional_characters",
+      "pokemon_quality": -51.839500427246094,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "table",
+      "category": "common_objects",
+      "pokemon_quality": -52.39244842529297,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "key",
+      "category": "common_objects",
+      "pokemon_quality": -52.435203552246094,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Zelda",
+      "category": "fictional_characters",
+      "pokemon_quality": -52.675445556640625,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "window",
+      "category": "common_objects",
+      "pokemon_quality": -53.34681701660156,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "cerberus",
+      "category": "mythical_creatures",
+      "pokemon_quality": -54.61214828491211,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "imp",
+      "category": "mythical_creatures",
+      "pokemon_quality": -56.043251037597656,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "phone",
+      "category": "common_objects",
+      "pokemon_quality": -56.546688079833984,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "dolphin",
+      "category": "real_animals",
+      "pokemon_quality": -56.788455963134766,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "book",
+      "category": "common_objects",
+      "pokemon_quality": -57.43464660644531,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "shield",
+      "category": "common_objects",
+      "pokemon_quality": -58.043861389160156,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "door",
+      "category": "common_objects",
+      "pokemon_quality": -58.51606750488281,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "rock",
+      "category": "common_objects",
+      "pokemon_quality": -58.688323974609375,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "ball",
+      "category": "common_objects",
+      "pokemon_quality": -59.73627471923828,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "egg",
+      "category": "common_objects",
+      "pokemon_quality": -60.73070526123047,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "river",
+      "category": "common_objects",
+      "pokemon_quality": -60.83732223510742,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "phoenix",
+      "category": "mythical_creatures",
+      "pokemon_quality": -61.294647216796875,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "cat",
+      "category": "real_animals",
+      "pokemon_quality": -62.2733154296875,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "tree",
+      "category": "common_objects",
+      "pokemon_quality": -62.287933349609375,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "fox",
+      "category": "real_animals",
+      "pokemon_quality": -62.29210662841797,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Mario",
+      "category": "fictional_characters",
+      "pokemon_quality": -62.55812454223633,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "chair",
+      "category": "common_objects",
+      "pokemon_quality": -62.6650390625,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "car",
+      "category": "common_objects",
+      "pokemon_quality": -63.00089645385742,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Chocobo",
+      "category": "other_game_creatures",
+      "pokemon_quality": -63.166160583496094,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "bear",
+      "category": "real_animals",
+      "pokemon_quality": -63.296844482421875,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "cloud",
+      "category": "common_objects",
+      "pokemon_quality": -63.652793884277344,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "minotaur",
+      "category": "mythical_creatures",
+      "pokemon_quality": -65.03660583496094,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "computer",
+      "category": "common_objects",
+      "pokemon_quality": -65.66860961914062,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "wolf",
+      "category": "real_animals",
+      "pokemon_quality": -66.04729461669922,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "sword",
+      "category": "common_objects",
+      "pokemon_quality": -66.28443145751953,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "Batman",
+      "category": "fictional_characters",
+      "pokemon_quality": -66.29042053222656,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "crow",
+      "category": "real_animals",
+      "pokemon_quality": -66.49821472167969,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "dragon",
+      "category": "mythical_creatures",
+      "pokemon_quality": -74.63951110839844,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "dog",
+      "category": "real_animals",
+      "pokemon_quality": -74.71534729003906,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "frog",
+      "category": "real_animals",
+      "pokemon_quality": -75.45106506347656,
+      "classified_as_pokemon": false
+    },
+    {
+      "entity": "horse",
+      "category": "real_animals",
+      "pokemon_quality": -79.981689453125,
+      "classified_as_pokemon": false
+    }
+  ],
+  "category_summary": {
+    "pokemon_like_names": {
+      "mean": -21.58236289024353,
+      "std": 8.591839982995563,
+      "n": 20
+    },
+    "other_game_creatures": {
+      "mean": -22.123520570642807,
+      "std": 11.670943272201095,
+      "n": 17
+    },
+    "digimon": {
+      "mean": -27.19532247023149,
+      "std": 5.673446389735233,
+      "n": 22
+    },
+    "mythical_creatures": {
+      "mean": -32.90265827178955,
+      "std": 14.582905466458497,
+      "n": 30
+    },
+    "real_animals": {
+      "mean": -36.80962998012327,
+      "std": 16.42147696935329,
+      "n": 53
+    },
+    "fictional_characters": {
+      "mean": -38.592556126912434,
+      "std": 15.071664664136913,
+      "n": 15
+    },
+    "common_objects": {
+      "mean": -54.71220397949219,
+      "std": 12.228026635121534,
+      "n": 20
+    }
+  },
+  "kruskal_wallis": {
+    "H": 58.22367343655492,
+    "p": 1.0323171938395176e-10
+  },
+  "pokemon_train_size": 160,
+  "non_pokemon_train_size": 122,
+  "pokemon_test_size": 40,
+  "non_pokemon_test_size": 55
+}

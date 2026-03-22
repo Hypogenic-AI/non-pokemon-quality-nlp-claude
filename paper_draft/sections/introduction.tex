@@ -1,0 +1,17 @@
+\section{Introduction}
+\label{sec:intro}
+
+What makes something a Pok\'{e}mon? To a human, the answer involves a mix of visual design, naming conventions, franchise knowledge, and cultural association. But how does a language model represent this concept? Recent work on the Linear Representation Hypothesis \citep{park2024linear} has shown that high-level concepts---truth and falsehood \citep{marks2024geometry}, language identity, and factual associations \citep{meng2022locating}---are encoded as linear directions in transformer representation spaces. We ask whether this extends to a category that is at once highly specific and culturally rich: membership in the Pok\'{e}mon franchise.
+
+This question matters for two reasons. First, fictional franchise membership is a novel test case for the Linear Representation Hypothesis. Unlike truth or sentiment, ``is a Pok\'{e}mon'' is a culturally constructed category with fuzzy boundaries---Digimon look like Pok\'{e}mon, many real animals inspired Pok\'{e}mon designs, and invented creature names can sound convincingly Pok\'{e}mon-like. If a simple linear direction can capture this category, it suggests that linear representations extend well beyond the clean binary concepts studied so far. Second, the question ``which non-Pok\'{e}mon entities are most Pok\'{e}mon-like according to a language model?'' is intrinsically interesting. It reveals how models organize knowledge about fictional entities and whether franchise boundaries are sharp or graded in representation space.
+
+We use the mass-mean probing technique from \citet{marks2024geometry} to extract a Pok\'{e}mon direction from GPT-2-XL's residual stream. We find that this direction achieves 88.4\% classification accuracy on held-out entities (AUC = 0.934), substantially outperforming both a random direction baseline (50.5\%) and a logistic regression probe (83.2\%). The direction emerges as early as layer 4 and peaks in the middle layers (10--32), consistent with prior findings that conceptual representations are strongest in middle transformer layers \citep{meng2022locating, marks2024geometry}.
+
+By projecting 177 non-Pok\'{e}mon entities across seven categories onto this direction, we uncover a continuous spectrum of Pok\'{e}mon quality. Invented Pok\'{e}mon-sounding names and Nintendo game creatures score highest; Digimon rank third; common real-world objects are maximally distant. The category-level ordering is highly significant (Kruskal-Wallis $H = 58.22$, $p = 1.03 \times 10^{-10}$) and matches human intuitions about Pok\'{e}mon-likeness. Thirteen non-Pok\'{e}mon entities cross the classification boundary, including Cactuar, Koopa, Kirby, and the Digimon Garurumon.
+
+In summary, our main contributions are:
+\begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+    \item We demonstrate that fictional franchise membership (``is a Pok\'{e}mon'') is linearly encoded in GPT-2-XL's residual stream, extending the Linear Representation Hypothesis to a new and culturally rich category.
+    \item We discover that non-Pok\'{e}mon entities exhibit a continuous, interpretable spectrum of Pok\'{e}mon quality, with game creatures and invented monster names scoring highest and common objects scoring lowest.
+    \item We show that the mass-mean probe outperforms logistic regression for this task (88.4\% vs.\ 83.2\%), consistent with prior findings on the superior causal meaningfulness of unsupervised directions.
+\end{itemize}

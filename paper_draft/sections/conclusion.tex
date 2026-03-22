@@ -1,0 +1,8 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+We show that the concept ``X is a Pok\'{e}mon'' is encoded as a linear direction in GPT-2-XL's residual stream, concentrated in middle layers (10--32). A mass-mean probe achieves 88.4\% classification accuracy on held-out entities, outperforming both logistic regression and random baselines. By projecting non-Pok\'{e}mon entities onto this direction, we discover a continuous, interpretable spectrum of Pok\'{e}mon quality: game creatures from similar franchises and invented monster names score highest, Digimon rank in the middle, and common objects are maximally distant.
+
+The key takeaway is that linear representations in language models extend to fine-grained, culturally constructed categories---not just broad semantic properties---and that these representations encode graded similarity rather than binary membership.
+
+Future work should validate these findings with causal intervention experiments, replicate across larger models, and investigate whether sub-categories (Pok\'{e}mon types, generations) form additional structure within the Pok\'{e}mon subspace. Sparse autoencoder decomposition may reveal whether a discrete ``Pok\'{e}mon feature'' exists alongside the linear direction we identify.

@@ -1,0 +1,783 @@
+You are an academic paper writer. Generate a complete NEURIPS style paper
+based on the experiment results provided.
+
+════════════════════════════════════════════════════════════════════════════════
+                         IMPORTANT: BEFORE YOU START
+════════════════════════════════════════════════════════════════════════════════
+
+Before writing any content, you MUST complete these steps:
+
+1. READ THE SKILL: Review the paper-writer skill at .claude/skills/paper-writer/SKILL.md
+2. READ THE STYLE GUIDE: Study templates/paper_writing/lab_style_guide.md carefully
+3. REVIEW EXAMPLES: Browse paper_examples/ for formatting and language patterns:
+   - Look at sections/1.introduction.tex for language style
+   - Look at tables/*.tex for table formatting
+   - Look at commands/*.tex for macro usage
+4. VERIFY COMMAND TEMPLATES: Command templates (math.tex, general.tex, macros.tex) are pre-copied to paper_draft/commands/
+
+CRITICAL: Reference example papers for FORMATTING and LANGUAGE STYLE only.
+Do NOT copy content, phrasing, or narrative structure from the example papers.
+The examples are in a different research domain - focus only on presentation style.
+
+════════════════════════════════════════════════════════════════════════════════
+                            EXPERIMENT REPORT
+════════════════════════════════════════════════════════════════════════════════
+
+# Research Report: Do Any Non-Pokemon Have Non-Trivial Pokemon Quality?
+
+## 1. Executive Summary
+
+We investigated how the concept &#34;X is a Pokemon&#34; is represented in GPT-2-XL (1.5B parameters) using mechanistic interpretability techniques. Using a mass-mean probe on residual stream activations, we found that **Pokemon-ness is encoded as a linear direction in the residual stream**, achieving 88.4% classification accuracy (AUC=0.934) on a held-out test set — far above the 50.5% random baseline. By projecting non-Pokemon entities onto this direction, we discovered that **Pokemon-like invented names, game creatures (Cactuar, Koopa, Kirby), and Digimon** score highest in &#34;Pokemon quality,&#34; while common objects (chairs, computers) score lowest. The category-level differences are highly significant (Kruskal-Wallis p=1.03×10⁻¹⁰). Thirteen non-Pokemon entities were classified as Pokemon by the probe, including invented Pokemon-sounding names, Nintendo game creatures, and one Digimon (Garurumon).
+
+## 2. Goal
+
+**Hypothesis**: The notion of &#34;X is a Pokemon&#34; is encoded in an LLM as a linear direction in the residual stream. By identifying this direction, we can determine which non-Pokemon entities are closest to being Pokemon in the model&#39;s representation space.
+
+**Why this matters**: This tests whether the Linear Representation Hypothesis extends to fictional franchise membership — a novel category not previously studied. It reveals how LLMs organize knowledge about fictional entities and whether such categorical boundaries are sharp or fuzzy.
+
+**Gap filled**: Prior work on linear probing (Marks &amp; Tegmark 2024, Park et al. 2024) focused on truth/falsehood, language, and factual properties. No one has probed for membership in a specific fictional franchise, and the question &#34;what non-Pokemon is most Pokemon-like according to an LLM?&#34; is entirely novel.
+
+## 3. Data Construction
+
+### Dataset Description
+- **Pokemon names**: 1,026 Pokemon (Gen 1–9) from GitHub (lgreski/pokemonData)
+- **Non-Pokemon entities**: 177 entities across 7 categories, curated for diversity:
+  - Real animals (53): dog, cat, axolotl, capybara, etc.
+  - Mythical creatures (30): dragon, phoenix, unicorn, kitsune, etc.
+  - Digimon (22): Agumon, Gabumon, Greymon, etc.
+  - Pokemon-like names (20): Crystalix, Flamezor, Thunderix (invented)
+  - Other game creatures (17): Chocobo, Kirby, Goomba, etc.
+  - Fictional characters (15): Harry Potter, Yoda, Batman, etc.
+  - Common objects (20): chair, table, computer, sword, etc.
+
+### Example Samples
+| Entity | Category | Expected Pokemon Quality |
+|--------|----------|------------------------|
+| Pikachu | Pokemon (positive) | High |
+| Agumon | Digimon (negative) | Medium-high |
+| dog | Real animal (negative) | Low |
+| chair | Common object (negative) | Very low |
+
+### Data Splits
+- **Pokemon train**: 160 (random sample from 1,026)
+- **Pokemon test**: 40
+- **Non-Pokemon train**: 122 (70% of each category)
+- **Non-Pokemon test**: 55 (30% of each category)
+
+### Preprocessing
+Each entity was embedded in the prompt template `&#34;{entity} is a&#34;` and tokenized with BOS prepended. Activations were extracted at the last token position of the entity name.
+
+## 4. Experiment Description
+
+### Methodology
+
+#### High-Level Approach
+We used the **mass-mean probing** technique from Marks &amp; Tegmark (2024, &#34;The Geometry of Truth&#34;) adapted for Pokemon classification. The approach:
+1. Extract residual stream activations from GPT-2-XL at each layer
+2. Compute the &#34;Pokemon direction&#34; as θ = mean(activations_pokemon) - mean(activations_non-pokemon), normalized
+3. Project all entities onto this direction to get a &#34;Pokemon quality&#34; score
+4. Validate via classification accuracy, AUC, and control baselines
+
+#### Why This Method?
+Mass-mean probing is preferred over logistic regression because it produces more causally meaningful directions (Marks &amp; Tegmark 2024 showed mass-mean probes have NIE ~0.85-0.97 vs. 0.33-0.52 for logistic regression). It&#39;s also unsupervised in nature — the direction emerges from the geometry of the data rather than being optimized for classification.
+
+### Implementation Details
+
+#### Tools and Libraries
+| Library | Version | Purpose |
+|---------|---------|---------|
+| TransformerLens | 2.15.4 | Model loading and activation caching |
+| PyTorch | 2.10.0 | Tensor computation |
+| scikit-learn | latest | Logistic regression baseline, PCA |
+| scipy | latest | Statistical tests |
+
+#### Model
+**GPT-2-XL** (1.5B parameters, 48 layers, d_model=1600). Chosen for: (1) full internal access via TransformerLens, (2) large enough for meaningful representations, (3) fast iteration on RTX A6000 GPU.
+
+#### Hyperparameters
+| Parameter | Value | Rationale |
+|-----------|-------|-----------|
+| Prompt template | `&#34;{entity} is a&#34;` | Elicits entity classification context |
+| Token position | Last entity token | Following ROME (Meng et al. 2022) finding that last subject token is critical |
+| Layers analyzed | Every 2nd layer (24 total) | Efficient coverage of all 48 layers |
+| Batch size | 16 | Fits in GPU memory with activation caching |
+| Dtype | float16 | Memory efficiency |
+| Random seed | 42 | Reproducibility |
+
+### Experimental Protocol
+- **Runs**: Single run (deterministic — mass-mean probe has no stochastic component)
+- **Hardware**: NVIDIA RTX A6000 (49GB), CUDA
+- **Execution time**: ~15 seconds for all activation extraction + analysis
+
+### Results
+
+#### Layer-Wise Classification Accuracy
+
+| Layer | Test Accuracy | AUC | Cohen&#39;s d |
+|-------|--------------|-----|-----------|
+| 0 | 0.768 | 0.828 | 1.54 |
+| 4 | 0.811 | 0.885 | 1.94 |
+| 8 | 0.853 | 0.919 | 1.91 |
+| **10** | **0.884** | **0.934** | **1.82** |
+| 12 | 0.884 | 0.938 | 1.84 |
+| 16 | 0.853 | 0.951 | 2.15 |
+| 26 | 0.863 | 0.955 | 2.52 |
+| 30 | 0.884 | 0.960 | 2.59 |
+| **32** | **0.884** | **0.965** | **2.62** |
+| 38 | 0.811 | 0.930 | 2.58 |
+| 44 | 0.821 | 0.866 | 2.35 |
+| 46 | 0.811 | 0.806 | 1.78 |
+
+Best test accuracy: **88.4%** at layers 10, 12, 30, and 32. Best AUC: **0.965** at layer 32.
+
+The Pokemon direction emerges as early as layer 4 (81.1% accuracy), peaks in the middle layers (10-32), and degrades slightly in the final layers (44-46). This matches prior findings that conceptual representations are strongest in middle layers.
+
+#### Method Comparison (at Best Layer = 10)
+
+| Method | Test Accuracy | AUC |
+|--------|--------------|-----|
+| **Mass-mean probe** | **0.884** | **0.934** |
+| Logistic regression | 0.832 | 0.941 |
+| Random direction | 0.505 | — |
+
+The mass-mean probe outperforms logistic regression in accuracy (88.4% vs 83.2%) despite being unsupervised, consistent with findings from Marks &amp; Tegmark (2024). The random direction performs at chance level (50.5%), confirming the Pokemon direction captures genuine structure.
+
+#### Top 30 Non-Pokemon Entities by Pokemon Quality
+
+| Rank | Entity | Category | Score | Classified as Pokemon? |
+|------|--------|----------|-------|----------------------|
+| 1 | **Crystalix** | Pokemon-like names | -10.13 | Yes |
+| 2 | **Cactuar** | Other game creatures | -10.76 | Yes |
+| 3 | **Frostbeak** | Pokemon-like names | -11.40 | Yes |
+| 4 | **Koopa** | Other game creatures | -11.60 | Yes |
+| 5 | **Thunderix** | Pokemon-like names | -12.72 | Yes |
+| 6 | **Pianta** | Other game creatures | -13.50 | Yes |
+| 7 | **Samus** | Fictional characters | -13.71 | Yes |
+| 8 | **Goomba** | Other game creatures | -14.34 | Yes |
+| 9 | **Garurumon** | Digimon | -14.87 | Yes |
+| 10 | **Mistral** | Pokemon-like names | -15.06 | Yes |
+| 11 | **armadillo** | Real animals | -15.56 | Yes |
+| 12 | **Kirby** | Other game creatures | -15.83 | Yes |
+| 13 | **Moogle** | Other game creatures | -15.86 | Yes |
+| 14 | Boulderback | Pokemon-like names | -16.58 | No |
+| 15 | kitsune | Mythical creatures | -16.80 | No |
+| 16 | Voltaur | Pokemon-like names | -16.82 | No |
+| 17 | Gabumon | Digimon | -16.93 | No |
+| 18 | Flamezor | Pokemon-like names | -17.06 | No |
+| 19 | Agumon | Digimon | -17.06 | No |
+| 20 | Thornvine | Pokemon-like names | -17.29 | No |
+| 21 | Gandalf | Fictional characters | -17.31 | No |
+| 22 | Creeper | Other game creatures | -17.46 | No |
+| 23 | Aquadon | Pokemon-like names | -17.80 | No |
+| 24 | chimera | Mythical creatures | -17.97 | No |
+| 25 | Navi | Other game creatures | -18.01 | No |
+| 26 | ferret | Real animals | -18.39 | No |
+| 27 | Calumon | Digimon | -18.44 | No |
+| 28 | ogre | Mythical creatures | -18.61 | No |
+| 29 | Hydralisk | Pokemon-like names | -18.81 | No |
+| 30 | Yoda | Fictional characters | -18.86 | No |
+
+**13 non-Pokemon entities were classified as Pokemon** by the mass-mean probe. These are dominated by: invented Pokemon-sounding names (4), Nintendo/game creatures (6), one Digimon (Garurumon), one real animal (armadillo), and one fictional character (Samus — notably from a Nintendo franchise).
+
+#### Bottom 10 Non-Pokemon Entities (Least Pokemon-Like)
+
+| Rank | Entity | Category | Score |
+|------|--------|----------|-------|
+| 168 | minotaur | Mythical creatures | -65.04 |
+| 169 | computer | Common objects | -65.67 |
+| 170 | wolf | Real animals | -66.05 |
+| 171 | sword | Common objects | -66.28 |
+| 172 | Batman | Fictional characters | -66.29 |
+| 173 | crow | Real animals | -66.50 |
+| 174 | dragon | Mythical creatures | -74.64 |
+| 175 | dog | Real animals | -74.72 |
+| 176 | frog | Real animals | -75.45 |
+| 177 | horse | Real animals | -79.98 |
+
+Common real animals (dog, horse, frog) and common objects score lowest. Interestingly, &#34;dragon&#34; scores very low despite many dragon-type Pokemon — the model distinguishes between *the concept of a dragon* and *dragon-type Pokemon*.
+
+#### Category-Level Pokemon Quality
+
+| Category | Mean Score | Std Dev | N |
+|----------|-----------|---------|---|
+| **Pokemon-like names** | **-21.58** | 8.59 | 20 |
+| **Other game creatures** | **-22.12** | 11.67 | 17 |
+| Digimon | -27.20 | 5.67 | 22 |
+| Mythical creatures | -32.90 | 14.58 | 30 |
+| Real animals | -36.81 | 16.42 | 53 |
+| Fictional characters | -38.59 | 15.07 | 15 |
+| Common objects | -54.71 | 12.23 | 20 |
+
+**Kruskal-Wallis test**: H=58.22, p=1.03×10⁻¹⁰ (highly significant category differences)
+
+The ordering is interpretable: made-up Pokemon-sounding names and game creatures from similar franchises are most &#34;Pokemon-like,&#34; while common real-world objects are least Pokemon-like. Digimon rank third — close to Pokemon but clearly distinguished.
+
+## 5. Result Analysis
+
+### Key Findings
+
+1. **Pokemon-ness IS linearly encoded**: A simple mass-mean direction achieves 88.4% accuracy / 0.934 AUC, far above the 50.5% random baseline. The Linear Representation Hypothesis extends to fictional franchise membership.
+
+2. **The encoding is strongest in middle layers**: Accuracy peaks at layers 10-32 (of 48), consistent with prior work showing conceptual representations in middle transformer layers.
+
+3. **Non-Pokemon entities have a continuous spectrum of &#34;Pokemon quality&#34;**: The projection scores form a continuous distribution, not a binary split. Some non-Pokemon entities score comparably to actual Pokemon.
+
+4. **The model considers game creatures and invented monster names most Pokemon-like**: Entities from Nintendo franchises (Koopa, Goomba, Kirby, Pianta) and invented creature-sounding names (Crystalix, Frostbeak, Thunderix) score highest.
+
+5. **Digimon are distinguished from Pokemon**: Despite being the most similar franchise, Digimon average lower than game creatures, suggesting the model encodes franchise-specific knowledge, not just &#34;fictional creature-ness.&#34;
+
+6. **Common objects are maximally distant from Pokemon**: Chairs, computers, and doors score far below everything else, confirming the direction captures something meaningful about entity type.
+
+7. **Among actual Pokemon, less famous ones score lower**: Pokemon like Silcoon (-31.5) and Clobbopus (-28.6) — obscure or uncommon names — score lower than iconic ones like Gothorita (-5.2) and Oshawott (-6.8), suggesting the direction also captures how &#34;recognizably Pokemon&#34; a name is.
+
+### Hypothesis Testing
+
+- **H₁ (Pokemon-ness is linearly encoded)**: SUPPORTED. Accuracy significantly above chance (p &lt; 10⁻¹⁰ by binomial test at 88.4% with n=95).
+- **H₂ (Middle layers encode it best)**: SUPPORTED. Peak accuracy at layers 10-32.
+- **H₃ (Non-Pokemon entities vary in Pokemon quality)**: SUPPORTED. Score range spans from -10.1 to -80.0.
+- **H₄ (Similar entities score higher)**: SUPPORTED. Category ordering matches intuition (Kruskal-Wallis p=1.03×10⁻¹⁰).
+
+### Surprises and Insights
+
+- **Samus Aran was classified as Pokemon**: The only fictional character above the threshold. This may reflect Nintendo franchise co-occurrence in training data rather than creature-likeness.
+- **Armadillo is the most &#34;Pokemon-like&#34; real animal**: Its unusual name and distinctive appearance may trigger Pokemon-like representations. (There is indeed a Pokemon-like creature inspired by armadillos: Sandshrew.)
+- **Gandalf ranked #21**: Surprisingly high for a human wizard. This may reflect fantasy/RPG co-occurrence.
+- **Mass-mean outperformed logistic regression**: Despite LR having more capacity (full weight vector), the simpler mass-mean direction generalized better (88.4% vs 83.2%), confirming the finding from Marks &amp; Tegmark (2024).
+
+### Limitations
+
+1. **Single model (GPT-2-XL)**: Results may not generalize to other architectures or scales. Larger models likely have cleaner representations.
+2. **Prompt dependence**: Using `&#34;{entity} is a&#34;` may bias which aspect of the entity is represented. Other templates could yield different rankings.
+3. **Training data confound**: The model may associate certain entities with Pokemon due to web co-occurrence (e.g., Nintendo characters appearing on the same pages) rather than genuine conceptual similarity.
+4. **No causal validation**: We did not verify that adding the Pokemon direction to non-Pokemon entity activations causes Pokemon-like completions. This would strengthen the causal claim.
+5. **Token position heuristic**: Using the last entity token is standard but may miss information encoded at other positions, especially for multi-token names.
+6. **Small non-Pokemon test set**: With only 55 test examples, confidence intervals are wide.
+
+## 6. Conclusions
+
+### Summary
+The concept &#34;X is a Pokemon&#34; is encoded as a linear direction in GPT-2-XL&#39;s residual stream, concentrated in middle layers (10-32). By projecting non-Pokemon entities onto this direction, we find that game creatures from similar franchises (Cactuar, Koopa, Kirby), invented Pokemon-sounding names (Crystalix, Frostbeak), and one Digimon (Garurumon) are considered most &#34;Pokemon-like&#34; by the model. Common real-world objects are maximally distant from Pokemon in this representation space.
+
+### Implications
+- **For mechanistic interpretability**: The LRH extends to fine-grained fictional franchise membership, not just broad concepts like truth or sentiment.
+- **For understanding LLMs**: Models don&#39;t just store &#34;is/isn&#39;t Pokemon&#34; as a binary fact — they encode a continuous spectrum of &#34;Pokemon quality&#34; that varies meaningfully across entity types.
+- **For creative AI applications**: A model could potentially generate novel Pokemon-like entities by steering toward the Pokemon direction in representation space.
+
+### Confidence in Findings
+**Moderate-to-high**. The classification accuracy (88.4%) and effect sizes (Cohen&#39;s d up to 2.62) are robust, and the category-level ordering is highly interpretable. However, validation on additional models and causal intervention experiments would strengthen confidence.
+
+## 7. Next Steps
+
+### Immediate Follow-ups
+1. **Causal validation**: Add the Pokemon direction to non-Pokemon entity activations during generation and observe whether the model produces Pokemon-like completions.
+2. **Larger model replication**: Repeat with Pythia-6.9B or LLaMA-3 to see if representations become sharper.
+3. **Fine-grained Pokemon analysis**: Do Pokemon types (Fire, Water, etc.) form sub-directions within the Pokemon subspace?
+
+### Alternative Approaches
+- **Sparse autoencoders**: Decompose activations to find a specific &#34;Pokemon feature&#34; neuron/feature.
+- **Contrastive stimuli (RepE)**: Use Pokemon vs. non-Pokemon prompts to extract directions without labeled examples.
+- **Activation patching**: Localize exactly which attention heads or MLP layers compute Pokemon-ness.
+
+### Open Questions
+- Is the Pokemon direction primarily driven by morphological features (name sounds), semantic features (creature-like), or factual knowledge (training data)?
+- Does &#34;Pokemon quality&#34; correspond to human intuitions about what &#34;seems like a Pokemon&#34;?
+- Could this methodology be used to find other franchise-specific directions (Digimon, Yu-Gi-Oh, etc.)?
+
+## References
+
+1. Park, C., Choe, Y.J., Veitch, V. (2024). &#34;The Linear Representation Hypothesis and the Geometry of Large Language Models.&#34; ICML 2024.
+2. Marks, S., Tegmark, M. (2024). &#34;The Geometry of Truth: Emergent Linear Structure in Large Language Model Representations of True/False Datasets.&#34; COLM 2024.
+3. Meng, K., et al. (2022). &#34;Locating and Editing Factual Associations in GPT.&#34; NeurIPS 2022.
+4. Zou, A., et al. (2023). &#34;Representation Engineering: A Top-Down Approach to AI Transparency.&#34;
+5. Turner, A., et al. (2023). &#34;Activation Addition: Steering Language Models Without Optimization.&#34;
+6. Cunningham, H., et al. (2023). &#34;Sparse Autoencoders Find Highly Interpretable Features in Language Models.&#34;
+7. Engels, J., et al. (2024). &#34;Not All Language Model Features Are Linear.&#34;
+
+## Appendix: Output Files
+
+- `results/experiment_results.json`: Full numerical results
+- `results/plots/layer_accuracy.png`: Layer-wise classification accuracy
+- `results/plots/pca_pokemon_vs_nonpokemon.png`: PCA visualization
+- `results/plots/top_nonpokemon_by_quality.png`: Top 30 non-Pokemon ranked
+- `results/plots/category_boxplot.png`: Category-level comparison
+- `results/plots/projection_distribution.png`: Score distributions
+- `results/plots/method_comparison.png`: Baseline comparison
+
+
+════════════════════════════════════════════════════════════════════════════════
+                            RESEARCH PLAN
+════════════════════════════════════════════════════════════════════════════════
+
+# Research Plan: Do Any Non-Pokemon Have Non-Trivial Pokemon Quality?
+
+## Motivation &amp; Novelty Assessment
+
+### Why This Research Matters
+The Linear Representation Hypothesis (LRH) suggests high-level concepts are encoded as linear directions in LLM representation spaces. While this has been demonstrated for concepts like truth/falsehood, sentiment, and language — no one has investigated how *categorical membership in a specific fictional franchise* (Pokemon) is represented. Understanding this reveals how LLMs organize knowledge about fictional entities and whether such categories have sharp or fuzzy boundaries in representation space.
+
+### Gap in Existing Work
+Prior work (Marks &amp; Tegmark 2024, Park et al. 2024) demonstrates linear probing for truth, language, and factual concepts. Representation Engineering (Zou et al. 2023) shows contrastive stimuli can extract concept directions for abstract traits. However: (1) No work probes &#34;franchise membership&#34; as a concept, (2) No work examines whether fictional entity categories have fuzzy boundaries in representation space, (3) The question &#34;what non-Pokemon is most Pokemon-like?&#34; is entirely novel.
+
+### Our Novel Contribution
+We extract a &#34;Pokemon direction&#34; from LLM activations using mass-mean probing, validate it via classification accuracy, and then project non-Pokemon entities onto this direction to discover which real animals, mythical creatures, game characters, and other entities the model considers &#34;most Pokemon-like.&#34; This reveals the geometry of fictional franchise knowledge in LLMs.
+
+### Experiment Justification
+- **Experiment 1 (Direction Extraction)**: Find the Pokemon direction via mass-mean probe across layers — needed to identify WHERE and HOW pokemon-ness is encoded.
+- **Experiment 2 (Classification Validation)**: Test probe accuracy on held-out entities — validates the direction actually captures pokemon-ness, not noise.
+- **Experiment 3 (Non-Pokemon Ranking)**: Project non-Pokemon entities onto the direction — the core research question.
+- **Experiment 4 (Control Directions)**: Compare against random and &#34;fictional&#34; directions — ensures we found pokemon-ness specifically, not just &#34;fictional creature-ness.&#34;
+
+## Research Question
+How is the concept &#34;X is a Pokemon&#34; represented in an LLM, and which non-Pokemon entities score highest along this representation direction?
+
+## Hypothesis Decomposition
+1. &#34;Is a Pokemon&#34; is encoded as a linear direction in the residual stream (testable via probe accuracy).
+2. This direction is concentrated in middle-to-late layers (testable via layer-wise accuracy).
+3. Non-Pokemon entities vary in their projection onto this direction — some will have non-trivial &#34;Pokemon quality&#34; (testable via ranking).
+4. Entities resembling Pokemon (Digimon, mythical creatures, Pokemon-like names) will score higher than common objects (testable via category-level comparison).
+
+## Proposed Methodology
+
+### Approach
+Use TransformerLens to load a model with full access to internals, extract residual stream activations at each layer for Pokemon and non-Pokemon entities in a standardized prompt, compute the mass-mean direction, and project all entities onto it.
+
+### Model Choice
+GPT-2-XL (1.5B params) — large enough for good representations, small enough for fast iteration, and well-supported by TransformerLens. If time permits, validate on Pythia-6.9B.
+
+### Experimental Steps
+1. Load model via TransformerLens, extract activations for all entities using &#34;{entity} is a&#34; prompt
+2. Split Pokemon into train (80%) and test (20%) sets; split non-Pokemon similarly
+3. Compute mass-mean direction at each layer: θ_l = mean(act_pokemon_train) - mean(act_non_pokemon_train)
+4. Evaluate classification accuracy per layer on test set
+5. Select best layer, project ALL non-Pokemon entities onto θ
+6. Rank non-Pokemon entities by Pokemon quality score
+7. Visualize with PCA and bar charts
+8. Control: compute random direction, compare accuracy
+
+### Baselines
+- Random direction (null baseline)
+- Logistic regression probe (supervised baseline)
+
+### Evaluation Metrics
+- Classification accuracy (train/test) per layer
+- AUC-ROC for the probe
+- Top-k non-Pokemon entities by Pokemon quality
+- Category-level mean Pokemon quality scores
+
+### Statistical Analysis Plan
+- Bootstrap confidence intervals for accuracy
+- Compare category-level Pokemon quality with Kruskal-Wallis test
+- Effect size via Cohen&#39;s d between Pokemon and non-Pokemon projections
+
+## Expected Outcomes
+- Probe accuracy &gt; 90% at optimal layer (supporting linear encoding)
+- Digimon and mythical creatures will have highest Pokemon quality among non-Pokemon
+- Common objects will have lowest Pokemon quality
+- Pokemon-like fake names may or may not score high (depends on morphological vs. semantic encoding)
+
+## Timeline
+- Phase 1 (Planning): Done
+- Phase 2 (Setup): 10 min
+- Phase 3 (Implementation): 45 min
+- Phase 4 (Experiments): 30 min
+- Phase 5 (Analysis): 20 min
+- Phase 6 (Documentation): 20 min
+
+## Potential Challenges
+- Multi-token entity names may dilute signal → use last token position
+- Some entities may be rare/unknown to model → check with tokenization
+- Direction may capture &#34;fictional&#34; rather than &#34;Pokemon&#34; → control with fictional direction
+
+## Success Criteria
+- Probe accuracy &gt; 85% on held-out test set
+- Clear separation in PCA visualization
+- Interpretable ranking of non-Pokemon entities
+- Control direction performs significantly worse
+
+
+════════════════════════════════════════════════════════════════════════════════
+                          LITERATURE REVIEW
+════════════════════════════════════════════════════════════════════════════════
+
+# Literature Review: Do Any Non-Pokemon Have Non-Trivial Pokemon Quality?
+
+## Research Area Overview
+
+This research sits at the intersection of **mechanistic interpretability** and **concept representation** in large language models. The central question is whether the concept &#34;is a Pokemon&#34; is encoded as a linear direction in an LLM&#39;s representation space, and if so, which non-Pokemon entities score highest along this direction.
+
+The theoretical foundation rests on the **Linear Representation Hypothesis (LRH)**: high-level concepts are represented linearly as directions in LLM representation spaces. Recent work has formalized this hypothesis, provided tools for finding concept directions, and demonstrated that these directions are causally meaningful for model behavior.
+
+## Key Papers
+
+### Paper 1: The Linear Representation Hypothesis and the Geometry of LLMs
+- **Authors**: Park, Choe, Veitch (U Chicago)
+- **Year**: 2024 (ICML)
+- **arXiv**: 2311.03658
+- **Key Contribution**: Formal unification of three notions of linear representation (subspace, measurement, intervention) via a causal inner product.
+- **Methodology**: Define concept directions using counterfactual word pairs in unembedding space. Estimate direction as normalized mean of pair differences. Validate via alignment tests, orthogonality heatmaps, probe accuracy, and intervention experiments.
+- **Datasets Used**: 27 concepts from BATS 3.0 + custom language/frequency pairs. Requires single-token counterfactual pairs.
+- **Results**: 26/27 concepts showed clear linear structure. Causal inner product (Cov(γ)^{-1}) correctly makes separable concepts orthogonal.
+- **Code Available**: Yes - github.com/KihoPark/linear_rep_geometry
+- **Relevance**: Provides the theoretical framework and practical methodology for constructing a &#34;pokemon direction&#34; from counterfactual pairs like (Pikachu, mouse).
+
+### Paper 2: The Geometry of Truth (Marks &amp; Tegmark)
+- **Authors**: Marks, Tegmark (Northeastern/MIT)
+- **Year**: 2024 (COLM)
+- **arXiv**: 2310.06824
+- **Key Contribution**: Shows LLMs linearly represent truth/falsehood; difference-in-means (mass-mean) probes are more causally meaningful than logistic regression probes.
+- **Methodology**: (1) Localize truth representations via activation patching to middle layers at statement-ending tokens. (2) PCA visualization shows clear separation. (3) Mass-mean probe: θ_mm = μ_+ - μ_-. (4) Causal validation via activation intervention.
+- **Datasets Used**: Curated true/false statements (cities, translations, comparisons, conjunctions). 1K-32K rows per dataset.
+- **Results**: MM probe NIE ~0.85-0.97 (much higher causal implication than LR at 0.33-0.52). Linear truth emerges with scale.
+- **Code Available**: Yes - github.com/saprmarks/geometry-of-truth
+- **Relevance**: The MM probe methodology is directly applicable. The activation patching approach helps localize where &#34;pokemon-ness&#34; is encoded. The cross-dataset generalization paradigm validates that a direction captures the intended concept.
+
+### Paper 3: Locating and Editing Factual Associations in GPT (ROME)
+- **Authors**: Meng, Bau, Andonian, Belinkov
+- **Year**: 2022 (NeurIPS)
+- **arXiv**: 2202.05262
+- **Key Contribution**: Factual associations are stored in middle-layer MLP modules and can be edited with rank-one updates.
+- **Methodology**: Causal tracing identifies decisive neurons. ROME modifies MLP weights to update facts.
+- **Datasets Used**: CounterFact dataset (factual recall).
+- **Results**: Middle-layer MLPs mediate factual predictions; last subject token is critical.
+- **Code Available**: Yes - github.com/kmeng01/rome
+- **Relevance**: If &#34;is a pokemon&#34; is a factual association, it may be stored in MLPs at the entity&#39;s last token position. Causal tracing can locate it.
+
+### Paper 4: Representation Engineering (Zou et al.)
+- **Authors**: Zou, Phan, Chen, Campbell, Guo, Ren, Pan, Yin, Mazeika, Dombrowski, Goel, Li, Byun, Wang, Mallen, Basart, Koyejo, Song, Fredrikson, Kolter, Hendrycks
+- **Year**: 2023
+- **arXiv**: 2310.01405
+- **Key Contribution**: Top-down approach to AI transparency using population-level representations. Linear Artificial Tomography (LAT) uses contrastive stimuli to find concept directions.
+- **Methodology**: Present model with contrasting prompts (e.g., &#34;honest&#34; vs &#34;dishonest&#34; personas), extract activations, compute difference to get concept direction. Can read (probe) and control (steer) model behavior.
+- **Code Available**: Yes - github.com/andyzoujm/representation-engineering
+- **Relevance**: The contrastive stimulus design is adaptable for &#34;pokemon vs non-pokemon&#34; prompts. RepE&#39;s reading vectors could detect pokemon-ness in arbitrary inputs.
+
+### Paper 5: Steering LLMs with Activation Engineering (Turner et al.)
+- **Authors**: Turner, Thacker, Krasheninnikov, Olsson, et al.
+- **Year**: 2023
+- **arXiv**: 2308.10248
+- **Key Contribution**: Activation Addition (ActAdd) technique for steering model behavior by adding contrastive activation vectors.
+- **Methodology**: Compute steering vector from contrasting prompt pairs. Add scaled vector to residual stream during inference.
+- **Relevance**: After finding a &#34;pokemon direction,&#34; ActAdd could validate it by adding the direction to non-pokemon entity representations and observing pokemon-like completions.
+
+### Paper 6: Sparse Autoencoders Find Highly Interpretable Features in Language Models
+- **Authors**: Cunningham, Ewart, Riggs, Huben, Sharkey
+- **Year**: 2023
+- **arXiv**: 2309.08600
+- **Key Contribution**: SAEs decompose model activations into interpretable features, some corresponding to specific entity types or knowledge categories.
+- **Relevance**: SAE features might reveal a specific &#34;pokemon&#34; feature or related features for fictional entities, game characters, etc. Could provide complementary evidence to linear probing.
+
+### Paper 7: Not All Language Model Features Are Linear
+- **Authors**: Engels, Liao, Michaud, Gurnee, Tegmark
+- **Year**: 2024
+- **arXiv**: 2405.14860
+- **Key Contribution**: Some concepts are represented as multi-dimensional features (e.g., days of the week on a circle). Challenges pure 1D linear representation assumption.
+- **Relevance**: Important caveat - &#34;pokemon-ness&#34; might not be purely 1-dimensional. Pokemon types, generations, or evolutionary stages might form a multi-dimensional subspace.
+
+## Common Methodologies
+
+### Finding Concept Directions
+1. **Counterfactual pair differences** (Park et al.): Average γ(pokemon) - γ(analog) across pairs.
+2. **Difference-in-means / Mass-mean** (Marks &amp; Tegmark): μ_pokemon - μ_non_pokemon over activations.
+3. **Contrastive stimuli** (Zou et al.): Contrasting prompts → activation differences → PCA/mean.
+4. **Linear probes** (logistic regression): Train classifier on activations, extract weight vector.
+5. **Sparse autoencoders**: Decompose activations, find pokemon-specific features.
+
+### Validating Concept Directions
+1. **Classification accuracy**: Does projecting onto direction separate pokemon from non-pokemon?
+2. **Cross-dataset generalization**: Does probe trained on one set of entities transfer?
+3. **Causal intervention**: Does adding direction to activations cause pokemon-like outputs?
+4. **PCA visualization**: Do pokemon/non-pokemon cluster along direction?
+5. **Normalized Indirect Effect (NIE)**: Quantifies causal impact of intervention.
+
+## Standard Baselines
+- **Logistic regression probe**: Standard supervised linear classifier on activations
+- **Mass-mean probe**: Unsupervised difference-in-means direction
+- **CCS probe**: Unsupervised contrast-consistent search (Burns et al.)
+- **Random direction**: Control baseline for all probe metrics
+
+## Evaluation Metrics
+- **Probe accuracy**: Classification accuracy on held-out pokemon/non-pokemon examples
+- **Cross-dataset transfer accuracy**: Accuracy on out-of-distribution entities
+- **NIE (Normalized Indirect Effect)**: Causal impact of adding direction to activations
+- **Cosine similarity**: Between concept direction and individual entity directions
+- **Projection magnitude**: How far each entity projects onto the pokemon direction
+
+## Gaps and Opportunities
+
+1. **No prior work on &#34;pokemon-ness&#34; as a concept direction** - this is entirely novel
+2. **Entity-type probing is understudied** compared to truth/sentiment/language probing
+3. **Fictional entity representation** is an open question - how do LLMs distinguish fictional categories?
+4. **Cross-franchise similarity** (pokemon vs digimon vs other game creatures) is unexplored
+5. **Non-binary concept formulation**: Pokemon-ness might be better modeled as a continuous &#34;quality&#34; rather than binary
+
+## Recommendations for Our Experiment
+
+### Recommended Approach (Priority Order)
+1. **Mass-mean probe** on residual stream activations (simplest, most causally meaningful)
+2. **Counterfactual pair direction** in unembedding space (theoretically principled)
+3. **Contrastive stimuli** with pokemon/non-pokemon prompt pairs (RepE-style)
+
+### Recommended Models
+- **GPT-2 Medium/Large** via TransformerLens (fast iteration, full access to internals)
+- **LLaMA-2-7B** or **Pythia-6.9B** for larger-scale validation
+- Larger models expected to have cleaner concept representations
+
+### Recommended Datasets
+- Our curated **pokemon_names.json** (1026 Pokemon) as positive class
+- Our curated **non_pokemon_entities.json** (177 entities across 7 categories) as negative class
+- Our **contrastive_pairs.json** (49 pokemon/analog pairs) for counterfactual direction estimation
+- Our **prompt_templates.json** for activation extraction
+
+### Recommended Metrics
+- Probe accuracy on held-out pokemon/non-pokemon sets
+- Top-k non-pokemon entities by projection onto pokemon direction (the main research question!)
+- PCA visualization of pokemon vs non-pokemon activations
+- Causal validation: does adding pokemon direction cause pokemon-like completions?
+
+### Methodological Considerations
+- Extract activations from **middle layers** at the **last token of the entity name** (following ROME and Geometry of Truth findings)
+- Use **causal inner product** (Cov^{-1}) rather than Euclidean for proper geometric analysis
+- Test multiple layers and token positions to find optimal extraction point
+- Include **control experiments**: random directions, &#34;fictional&#34; direction, &#34;animal&#34; direction
+- Consider that pokemon names are single tokens in some models but multi-token in others
+
+
+════════════════════════════════════════════════════════════════════════════════
+                          PAPER REQUIREMENTS
+════════════════════════════════════════════════════════════════════════════════
+
+Generate a complete academic paper with the following structure:
+
+1. TITLE
+   - Clear, specific, informative
+   - Should convey main finding or contribution
+
+2. AUTHOR
+   - Use this exact author line in the \author{} block: Ari Holtzman and NeuriCo
+
+3. ABSTRACT (150-250 words)
+   - Problem statement
+   - Approach
+   - Key results
+   - Significance
+
+4. INTRODUCTION
+   - Research problem and motivation
+   - Gap in existing work
+   - Our contribution (be specific)
+   - Paper organization
+
+5. RELATED WORK
+   - Organized by theme/approach
+   - Position our work relative to prior work
+   - Cite papers from literature review
+
+6. METHODOLOGY
+   - Clear description of approach
+   - Experimental setup
+   - Datasets used
+   - Evaluation metrics
+   - Baselines
+
+7. RESULTS
+   - Present results with tables and figures
+   - Statistical analysis
+   - Comparison to baselines
+   - Ablation studies (if applicable)
+
+8. DISCUSSION
+   - Interpretation of results
+   - Limitations
+   - Broader implications
+
+9. CONCLUSION
+   - Summary of contributions
+   - Key findings
+   - Future work
+
+10. REFERENCES
+   - BibTeX format
+   - All cited papers
+
+════════════════════════════════════════════════════════════════════════════════
+                          OUTPUT FORMAT
+════════════════════════════════════════════════════════════════════════════════
+
+Create a MODULAR LaTeX project with the following directory structure:
+
+paper_draft/
+├── main.tex              # Main file that imports all sections
+├── references.bib        # BibTeX references
+├── sections/
+│   ├── abstract.tex      # Abstract content
+│   ├── introduction.tex  # Introduction section
+│   ├── related_work.tex  # Related work section
+│   ├── methodology.tex   # Methodology section
+│   ├── results.tex       # Results section
+│   ├── discussion.tex    # Discussion section
+│   └── conclusion.tex    # Conclusion section
+├── figures/              # Directory for any generated figures
+├── tables/               # Directory for complex standalone tables
+└── appendix/             # Directory for appendix sections (if needed)
+
+INSTRUCTIONS:
+1. First, create the directory structure above (mkdir -p paper_draft/sections paper_draft/figures paper_draft/tables paper_draft/appendix)
+2. Write main.tex using the EXACT preamble for NEURIPS:
+
+   \documentclass{article}
+   \usepackage[final]{neurips_2025}  % NEURIPS style (neurips_2025.sty is in paper_draft/)
+   \usepackage[hidelinks]{hyperref}  % REQUIRED: clickable links
+   \usepackage{booktabs}  % REQUIRED: professional tables
+   \usepackage{graphicx}
+   \usepackage{amsmath,amssymb}
+
+   % Import command files
+   \input{commands/math}
+   \input{commands/general}
+   \input{commands/macros}
+
+   % Use this bibliography style:
+   \bibliographystyle{plainnat}
+
+   \author{Ari Holtzman and NeuriCo}
+
+   - Use \input{sections/...} to include each section
+   - Use \bibliography{references} for references
+3. Write each section file with COMPLETE content (no placeholders)
+4. Each section file should include its \section{} command
+5. Write references.bib with all citations in BibTeX format
+6. After writing all files, compile the paper:
+   cd paper_draft && pdflatex -interaction=nonstopmode main.tex && bibtex main && pdflatex -interaction=nonstopmode main.tex && pdflatex -interaction=nonstopmode main.tex
+
+This modular structure allows humans to easily:
+- Edit individual sections without navigating a large file
+- Track changes per section
+- Reuse sections across different paper versions
+
+════════════════════════════════════════════════════════════════════════════════
+                          QUALITY REQUIREMENTS
+════════════════════════════════════════════════════════════════════════════════
+
+- Academic tone throughout
+- All claims must be supported by data from the experiment report
+- Proper citations using \cite{} commands
+- Clear figures and tables with proper captions
+- NO placeholder text - every section must have real content
+- The paper MUST compile without errors
+- If compilation fails, debug and fix the LaTeX errors
+
+════════════════════════════════════════════════════════════════════════════════
+                          LAB WRITING STYLE
+════════════════════════════════════════════════════════════════════════════════
+
+Follow these lab-specific conventions to match our paper style:
+
+1. LANGUAGE STYLE:
+   - Use active voice: "We propose", "We examine", "We focus on"
+   - Be direct and confident: "Our main question is...", "We hypothesize that..."
+   - State things clearly and simply - prefer plain language over jargon
+   - Use bold questions as paragraph organizers: {\bf what is X?}
+   - Include specific quantitative claims: "8.97% over baseline"
+   - Avoid fancy wording: "utilize" → "use", "facilitate" → "help"
+
+2. INTRODUCTION STRUCTURE:
+   - Engaging hook (get to the point quickly)
+   - Problem importance
+   - Gap identification
+   - Your approach with method figure reference
+   - Quantitative preview of results
+   - Contribution bullets (3-4 items, action verbs)
+
+3. CONTRIBUTION LISTS:
+   \begin{itemize}[leftmargin=*,itemsep=0pt,topsep=0pt]
+       \item We propose...
+       \item We conduct...
+       \item We complement...
+   \end{itemize}
+
+4. MODULAR COMMANDS STRUCTURE:
+   Command templates are pre-copied to paper_draft/commands/:
+   - math.tex: Math notation macros
+   - general.tex: Formatting macros
+   - macros.tex: Project-specific term definitions (customize this for your paper)
+
+   In main.tex, include:
+   \input{commands/math}
+   \input{commands/general}
+   \input{commands/macros}
+
+5. REFERENCE CONVENTIONS:
+   Use reference macros from math.tex:
+   - \figref{fig:name} for "figure 1" (lowercase, in-sentence)
+   - \Figref{fig:name} for "Figure 1" (capitalized, start of sentence)
+   - \secref{sec:name} for "section 2"
+
+6. TEXT FORMATTING:
+   - Use \para{Header text} for bold paragraph headers
+   - Define method/dataset names with \textsc and \xspace:
+     \newcommand{\methodname}{\textsc{MethodName}\xspace}
+
+7. TABLE FORMATTING:
+   - Use booktabs package (no vertical lines)
+   - Use \resizebox{\textwidth}{!}{...} for wide tables
+   - Use @{} to remove padding at table edges
+   - Use \cmidrule(lr){x-y} for sub-headers
+   - Use \textsc{} for dataset/method names in headers
+   - Bold best results with {\bf ...}
+
+8. FIGURE FORMATTING:
+   - Use 0.32\textwidth for 3-column subfigures
+   - Use 0.95\linewidth for full-width figures
+   - Use \input{figures/legend} for shared legends
+   - Write self-contained captions explaining key observations
+
+9. RESULTS PRESENTATION:
+   - Define \increase and \decrease for colored arrows (green up, red down)
+   - Bold best results in tables
+   - Report confidence intervals when available
+
+10. ALGORITHM STYLING:
+    - Use algpseudocode with [noend]
+    - Use \triangleright for comments
+
+11. HYPERLINKS (REQUIRED):
+    - Always use \usepackage[hidelinks]{hyperref} or with colored links
+    - All citations, section refs, figure refs, table refs must be clickable
+    - This is essential for reader navigation
+
+════════════════════════════════════════════════════════════════════════════════
+                          WORKFLOW: REVIEW AND REFLECT
+════════════════════════════════════════════════════════════════════════════════
+
+Before calling finish, you MUST complete these review steps:
+
+1. REVIEW RESOURCES (at the start):
+   - Read .claude/skills/paper-writer/SKILL.md for detailed guidance
+   - Study templates/paper_writing/lab_style_guide.md for style conventions
+   - Browse paper_examples/ for formatting and language patterns
+
+2. SELF-REFLECTION (before finishing):
+   After writing all sections, review your work against these criteria:
+
+   LANGUAGE CHECK:
+   - [ ] Is the writing clear and jargon-free?
+   - [ ] Are claims specific with quantitative support?
+   - [ ] Is active voice used throughout?
+
+   FORMATTING CHECK:
+   - [ ] Does main.tex include \input{commands/math}, \input{commands/general}, \input{commands/macros}?
+   - [ ] Is hyperref package included for clickable references?
+   - [ ] Do tables use booktabs (no vertical lines)?
+   - [ ] Are best results bolded in tables?
+   - [ ] Are figures/tables properly captioned?
+
+   STRUCTURE CHECK:
+   - [ ] Does introduction follow: hook → importance → gap → approach → preview → contributions?
+   - [ ] Are contribution bullets specific with action verbs?
+   - [ ] Does the paper compile without errors?
+
+3. FIX ISSUES:
+   - Address any issues found in the self-reflection
+   - Re-compile and verify the PDF looks correct
+
+Only after completing this review should you consider the paper finished.
